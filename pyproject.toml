@@ -1,0 +1,21 @@
+[project]
+name = "meltano-wordpress-org-data-example"
+version = "0.1.0"
+description = "Meltano project for extracting WordPress.org plugin data to DuckDB"
+requires-python = ">=3.11"
+dependencies = [
+    "meltano>=3.8.0",
+    "duckdb>=1.3.2",
+    "pandas>=2.3.1",
+    "numpy>=2.3.1",
+    "jupyter>=1.1.1",
+    "jupyterlab>=4.4.5",
+    "matplotlib>=3.10.3",
+    "seaborn>=0.13.2",
+    "plotly>=6.2.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "check-jsonschema>=0.33.2",
+]

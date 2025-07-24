@@ -1,0 +1,21 @@
+version: 1
+default_environment: dev
+project_id: f085f1e6-575c-442d-9e59-4d3d48f874b2
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-wordpress-org
+    variant: automattic
+    pip_url: git+https://github.com/Automattic/tap-wordpress-org.git
+    config:
+      stream_selection:
+      - plugins
+  loaders:
+  - name: target-duckdb
+    variant: jwills
+    pip_url: target-duckdb~=0.8
+    config:
+      path: ./data/wordpress_data.duckdb
