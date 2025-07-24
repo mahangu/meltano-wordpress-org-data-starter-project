@@ -83,7 +83,7 @@ check-data: ## Check what data is in the database
 
 notebook: ## Start Jupyter notebook with the analysis notebook open
 	@echo "📓 Starting Jupyter notebook with analysis notebook..."
-	$(UV_RUN) jupyter notebook notebook/wordpress_data_analysis.ipynb
+	$(UV_RUN) jupyter notebook notebook/wordpress_org_data_analysis.ipynb
 
 # Configuration and Status
 config: ## Show current Meltano configuration

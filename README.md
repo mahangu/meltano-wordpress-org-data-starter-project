@@ -25,7 +25,7 @@ meltano-wordpress-org-data-starter-project/
 ├── data/                           # DuckDB database files
 │   └── wordpress_data.duckdb       # Main database file
 ├── notebook/                       # Jupyter notebooks
-│   └── wordpress_data_analysis.ipynb  # Data analysis notebook
+│   └── wordpress_org_data_analysis.ipynb  # Data analysis notebook
 ├── analyze/                        # Analysis scripts
 ├── extract/                        # Extract configurations
 ├── load/                          # Load configurations
@@ -133,7 +133,7 @@ uv run python check_data.py
    ```
 
 2. **Open the analysis notebook:**
-   Navigate to `notebook/wordpress_data_analysis.ipynb`
+   Navigate to `notebook/wordpress_org_data_analysis.ipynb`
 
 3. **Run the notebook cells** to explore the WordPress.org data and create visualizations
 
