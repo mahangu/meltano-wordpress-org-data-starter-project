@@ -5,18 +5,18 @@
 
 # Check if uv is installed
 check-uv:
-	@command -v uv >/dev/null 2>&1 || { \
-		echo "❌ Error: uv is not installed!"; \
-		echo ""; \
-		echo "Please install uv first:"; \
-		echo "  macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh"; \
-		echo "  macOS (Homebrew): brew install uv"; \
-		echo "  Windows: powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\""; \
-		echo "  Alternative: pip install uv"; \
-		echo ""; \
-		echo "Then restart your terminal and try again."; \
-		exit 1; \
-	}
+	@uv --version >nul 2>&1 || uv --version >/dev/null 2>&1 || ( \
+		echo "❌ Error: uv is not installed!" && \
+		echo "" && \
+		echo "Please install uv first:" && \
+		echo "  macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh" && \
+		echo "  macOS (Homebrew): brew install uv" && \
+		echo "  Windows: powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\"" && \
+		echo "  Alternative: pip install uv" && \
+		echo "" && \
+		echo "Then restart your terminal and try again." && \
+		exit 1 \
+	)
 
 # UV command prefix
 UV_RUN = uv run
