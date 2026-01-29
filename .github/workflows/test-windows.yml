@@ -13,6 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install make
+        shell: powershell
+        run: choco install make -y
+
       - name: Install uv
         shell: powershell
         run: |
