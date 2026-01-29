@@ -25,10 +25,10 @@ jobs:
           irm https://astral.sh/uv/install.ps1 | iex
           Add-Content $env:GITHUB_PATH "$env:USERPROFILE\.local\bin"
 
-      - name: Test check-uv target (cmd.exe)
+      - name: Test check-uv target (cmd.exe shell)
         shell: cmd
-        run: make check-uv
+        run: make SHELL=cmd.exe check-uv
 
-      - name: Test setup target (cmd.exe)
+      - name: Test setup target (cmd.exe shell)
         shell: cmd
-        run: make setup
+        run: make SHELL=cmd.exe setup
