@@ -25,10 +25,13 @@ jobs:
           irm https://astral.sh/uv/install.ps1 | iex
           echo "$env:USERPROFILE\.local\bin" >> $env:GITHUB_PATH
 
-      - name: Test check-uv target
-        shell: cmd
-        run: make check-uv
+      - name: Debug PATH and test check-uv
+        shell: powershell
+        run: |
+          echo "PATH: $env:PATH"
+          where.exe make
+          make check-uv
 
       - name: Test setup target
-        shell: cmd
+        shell: powershell
         run: make setup
