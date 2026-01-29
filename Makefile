@@ -3,26 +3,33 @@
 .PHONY: help setup install extract extract-plugins extract-events extract-all \
         check-data clean-data notebook test requirements clean clean-all status config check-uv
 
+# Cross-platform null device
+ifeq ($(OS),Windows_NT)
+    NULLDEV = nul
+else
+    NULLDEV = /dev/null
+endif
+
 # Check if uv is installed
 check-uv:
-	@command -v uv >/dev/null 2>&1 || { \
-		echo "❌ Error: uv is not installed!"; \
-		echo ""; \
-		echo "Please install uv first:"; \
-		echo "  macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh"; \
-		echo "  macOS (Homebrew): brew install uv"; \
-		echo "  Windows: powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\""; \
-		echo "  Alternative: pip install uv"; \
-		echo ""; \
-		echo "Then restart your terminal and try again."; \
-		exit 1; \
-	}
+	@uv --version >$(NULLDEV) 2>&1 || ( \
+		echo "❌ Error: uv is not installed!" && \
+		echo "" && \
+		echo "Please install uv first:" && \
+		echo "  macOS/Linux: curl -LsSf https://astral.sh/uv/install.sh | sh" && \
+		echo "  macOS (Homebrew): brew install uv" && \
+		echo "  Windows: powershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\"" && \
+		echo "  Alternative: pip install uv" && \
+		echo "" && \
+		echo "Then restart your terminal and try again." && \
+		exit 1 \
+	)
 
 # UV command prefix
 UV_RUN = uv run
 
 # Default target
-help: ## Show this help message
+help: ## Show this help message (Unix/macOS only)
 	@echo "WordPress.org Data Pipeline - Available targets:"
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -90,7 +97,7 @@ config: ## Show current Meltano configuration
 	@echo "⚙️  Current Meltano configuration:"
 	$(UV_RUN) meltano config list
 
-status: ## Show project status and installed plugins
+status: ## Show project status and installed plugins (Unix/macOS only)
 	@echo "📋 Project Status:"
 	@echo "Python version: $$(python3 --version)"
 	@echo "UV virtual environment: $$(if [ -d .venv ]; then echo '✅ Exists'; else echo '❌ Missing'; fi)"
@@ -101,25 +108,25 @@ status: ## Show project status and installed plugins
 	fi
 	@echo ""
 	@echo "📊 Data Summary:"
-	@$(UV_RUN) python3 -c "import duckdb; conn = duckdb.connect('./data/wordpress_data.duckdb'); tables = conn.execute('SHOW TABLES').fetchall(); print(f'Tables: {len(tables)}'); [print(f'  - {t[0]}: {conn.execute(f\"SELECT COUNT(*) FROM {t[0]}\").fetchone()[0]:,} records') for t in tables]; conn.close()" 2>/dev/null || echo "  No data available"
+	@$(UV_RUN) python3 -c "import duckdb; conn = duckdb.connect('./data/wordpress_data.duckdb'); tables = conn.execute('SHOW TABLES').fetchall(); print(f'Tables: {len(tables)}'); [print(f'  - {t[0]}: {conn.execute(f\"SELECT COUNT(*) FROM {t[0]}\").fetchone()[0]:,} records') for t in tables]; conn.close()" 2>$(NULLDEV) || echo "  No data available"
 	@echo ""
 	@echo "Installed plugins:"
 	@echo "  - tap-wordpress-org (WordPress.org extractor)"
 	@echo "  - target-duckdb (DuckDB loader)"
 
 # Testing
-test: ## Run basic tests to verify setup
+test: ## Run basic tests to verify setup (Unix/macOS only)
 	@echo "🧪 Running tests..."
 	@echo "1. Checking UV virtual environment..."
 	@test -d .venv && echo "✅ UV virtual environment exists" || (echo "❌ UV virtual environment missing" && exit 1)
 	@echo "2. Checking Meltano installation..."
-	@$(UV_RUN) meltano --version > /dev/null && echo "✅ Meltano installed" || (echo "❌ Meltano not installed" && exit 1)
+	@$(UV_RUN) meltano --version >$(NULLDEV) && echo "✅ Meltano installed" || (echo "❌ Meltano not installed" && exit 1)
 	@echo "3. Checking DuckDB installation..."
 	@$(UV_RUN) python3 -c "import duckdb; print('✅ DuckDB available')" || (echo "❌ DuckDB not installed" && exit 1)
 	@echo "✅ All tests passed!"
 
 # Maintenance and Cleanup
-clean-data: ## Remove extracted data (keeps database structure)
+clean-data: ## Remove extracted data (keeps database structure) (Unix/macOS only)
 	@echo "🧹 Cleaning extracted data..."
 	@if [ -f ./data/wordpress_data.duckdb ]; then \
 		$(UV_RUN) python3 -c "import duckdb; conn = duckdb.connect('./data/wordpress_data.duckdb'); tables = [t[0] for t in conn.execute('SHOW TABLES').fetchall()]; [conn.execute(f'DELETE FROM {table}') for table in tables]; conn.close(); print('✅ Data cleaned')"; \
@@ -127,12 +134,12 @@ clean-data: ## Remove extracted data (keeps database structure)
 		echo "No database file found"; \
 	fi
 
-clean-db: ## Remove database files completely
+clean-db: ## Remove database files completely (Unix/macOS only)
 	@echo "🧹 Removing database files..."
 	rm -f ./data/wordpress_data.duckdb*
 	@echo "✅ Database files removed!"
 
-clean: ## Clean cache and temporary files
+clean: ## Clean cache and temporary files (Unix/macOS only)
 	@echo "🧹 Cleaning temporary files..."
 	rm -rf .meltano/run/
 	rm -rf notebook/.ipynb_checkpoints/

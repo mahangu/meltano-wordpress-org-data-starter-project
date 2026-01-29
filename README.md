@@ -95,9 +95,12 @@ meltano-wordpress-org-data-starter-project/
 
 ### Running the Data Pipeline
 
-**Using Make (Recommended):**
+**Using Make (Recommended for macOS/Linux):**
+
+> **Windows Users**: Most core commands (`make setup`, `make extract-*`, `make notebook`) work on Windows. For commands that don't work, use the equivalent `uv run` commands shown below.
+
 ```bash
-# See all available commands
+# See all available commands (macOS/Linux only)
 make help
 
 # Quick start (install plugins, extract sample data, check results)
@@ -141,21 +144,24 @@ uv run python check_data.py
 
 This project includes a comprehensive Makefile with convenient targets:
 
-| Command | Description |
-|---------|-------------|
-| `make help` | Show all available commands |
-| `make quickstart` | Complete setup: install plugins, extract sample data, check results |
-| `make extract-plugins` | Extract WordPress plugins data only |
-| `make extract-events` | Extract WordPress events data only |
-| `make extract-themes` | Extract WordPress themes data only |
-| `make extract-all` | Extract all available data streams |
-| `make sample-data` | Create sample data from WordPress.org API for testing |
-| `make check-data` | Check what data is in the database |
-| `make notebook` | Start Jupyter notebook with the analysis notebook open |
-| `make status` | Show project status and installed plugins |
-| `make test` | Run basic tests to verify setup |
-| `make clean-data` | Remove extracted data (keeps database structure) |
-| `make clean-db` | Remove database files completely |
+| Command | Description | Windows |
+|---------|-------------|---------|
+| `make setup` | Set up dependencies using uv | Yes |
+| `make quickstart` | Complete setup: install plugins, extract sample data, check results | Partial |
+| `make extract-plugins` | Extract WordPress plugins data only | Yes |
+| `make extract-events` | Extract WordPress events data only | Yes |
+| `make extract-themes` | Extract WordPress themes data only | Yes |
+| `make extract-all` | Extract all available data streams | Yes |
+| `make sample-data` | Create sample data from WordPress.org API for testing | Yes |
+| `make check-data` | Check what data is in the database | Yes |
+| `make notebook` | Start Jupyter notebook with the analysis notebook open | Yes |
+| `make help` | Show all available commands | No |
+| `make status` | Show project status and installed plugins | No |
+| `make test` | Run basic tests to verify setup | No |
+| `make clean-data` | Remove extracted data (keeps database structure) | No |
+| `make clean-db` | Remove database files completely | No |
+
+> **Windows Users**: Commands marked "No" require a Unix shell (bash). On Windows, use the equivalent `uv run` commands directly, or use WSL/Git Bash.
 
 **Examples:**
 ```bash
