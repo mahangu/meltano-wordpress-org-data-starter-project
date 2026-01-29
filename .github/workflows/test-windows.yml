@@ -17,21 +17,16 @@ jobs:
         shell: powershell
         run: |
           choco install make -y
-          echo "C:\ProgramData\chocolatey\bin" >> $env:GITHUB_PATH
+          Add-Content $env:GITHUB_PATH "C:\ProgramData\chocolatey\bin"
 
       - name: Install uv
         shell: powershell
         run: |
           irm https://astral.sh/uv/install.ps1 | iex
-          echo "$env:USERPROFILE\.local\bin" >> $env:GITHUB_PATH
+          Add-Content $env:GITHUB_PATH "$env:USERPROFILE\.local\bin"
 
-      - name: Debug PATH and test check-uv
-        shell: powershell
-        run: |
-          echo "PATH: $env:PATH"
-          where.exe make
-          make check-uv
+      - name: Test check-uv target
+        run: make check-uv
 
       - name: Test setup target
-        shell: powershell
         run: make setup
