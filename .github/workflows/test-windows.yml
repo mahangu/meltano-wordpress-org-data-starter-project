@@ -15,7 +15,9 @@ jobs:
 
       - name: Install make
         shell: powershell
-        run: choco install make -y
+        run: |
+          choco install make -y
+          echo "C:\ProgramData\chocolatey\bin" >> $env:GITHUB_PATH
 
       - name: Install uv
         shell: powershell
