@@ -19,3 +19,4 @@ plugins:
     pip_url: target-duckdb~=0.8
     config:
       path: ./data/wordpress_data.duckdb
+      default_target_schema: main
