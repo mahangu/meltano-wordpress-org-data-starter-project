@@ -1,7 +1,7 @@
 # WordPress.org Data Pipeline Makefile
 
 .PHONY: help setup install extract extract-plugins extract-events extract-all \
-        check-data clean-data notebook test requirements clean clean-all status config check-uv
+        check-data clean-data notebook test requirements clean clean-meltano-state clean-all status config check-uv
 
 # Cross-platform null device
 ifeq ($(OS),Windows_NT)
@@ -52,25 +52,25 @@ extract: extract-plugins ## Default extract (plugins only)
 extract-plugins: ## Extract WordPress plugins data only
 	@echo "🔄 Extracting WordPress plugins data..."
 	$(UV_RUN) meltano config tap-wordpress-org set stream_selection '["plugins"]'
-	$(UV_RUN) meltano el tap-wordpress-org target-duckdb
+	$(UV_RUN) meltano el tap-wordpress-org target-duckdb --state-id=wordpress-plugins
 	@echo "✅ Plugins extraction complete!"
 
 extract-events: ## Extract WordPress events data only
 	@echo "🔄 Extracting WordPress events data..."
 	$(UV_RUN) meltano config tap-wordpress-org set stream_selection '["events"]'
-	$(UV_RUN) meltano el tap-wordpress-org target-duckdb
+	$(UV_RUN) meltano el tap-wordpress-org target-duckdb --state-id=wordpress-events
 	@echo "✅ Events extraction complete!"
 
 extract-themes: ## Extract WordPress themes data only
 	@echo "🔄 Extracting WordPress themes data..."
 	$(UV_RUN) meltano config tap-wordpress-org set stream_selection '["themes"]'
-	$(UV_RUN) meltano el tap-wordpress-org target-duckdb
+	$(UV_RUN) meltano el tap-wordpress-org target-duckdb --state-id=wordpress-themes
 	@echo "✅ Themes extraction complete!"
 
 extract-all: ## Extract all available data streams
 	@echo "🔄 Extracting all WordPress.org data streams..."
 	$(UV_RUN) meltano config tap-wordpress-org set stream_selection ''
-	$(UV_RUN) meltano el tap-wordpress-org target-duckdb
+	$(UV_RUN) meltano el tap-wordpress-org target-duckdb --state-id=wordpress-all
 	@echo "✅ Full extraction complete!"
 
 extract-quick: ## Quick extraction with limited data for testing
@@ -145,7 +145,12 @@ clean: ## Clean cache and temporary files (Unix/macOS only)
 	rm -rf notebook/.ipynb_checkpoints/
 	@echo "✅ General cleanup complete!"
 
-clean-all: clean-db clean ## Remove all data and cache (complete reset)
+clean-meltano-state: ## Clear Meltano state (resets incremental sync bookmarks)
+	@echo "🧹 Clearing Meltano state..."
+	rm -f .meltano/meltano.db
+	@echo "✅ Meltano state cleared!"
+
+clean-all: clean-db clean clean-meltano-state ## Remove all data and cache (complete reset)
 	@echo "🧹 Complete cleanup performed!"
 
 # Development
