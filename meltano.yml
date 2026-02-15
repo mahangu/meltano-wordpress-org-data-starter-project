@@ -12,7 +12,8 @@ plugins:
     pip_url: git+https://github.com/Automattic/tap-wordpress-org.git
     config:
       stream_selection:
-      - themes
+      - plugins
+      - events
       events_location: Mumbai
   loaders:
   - name: target-duckdb

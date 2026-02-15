@@ -160,7 +160,7 @@ requirements: ## Generate requirements.txt file (for compatibility)
 	@echo "✅ requirements.txt generated from uv.lock!"
 
 # Quick start for new users
-quickstart: check-uv install sample-data check-data notebook ## Complete quickstart: install, create sample data, check results, and launch notebook
+quickstart: check-uv install sample-data extract-events check-data notebook ## Complete quickstart: install, create sample data, extract events, and launch notebook
 	@echo ""
 	@echo "🎉 Quickstart complete! Your WordPress.org data pipeline is ready and Jupyter notebook is starting..."
 	@echo ""
