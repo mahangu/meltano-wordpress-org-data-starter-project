@@ -14,9 +14,10 @@ A complete data pipeline that extracts data from the WordPress.org API using Mel
 
 The pipeline extracts data from WordPress.org including:
 - **Plugins**: Plugin information, ratings, download counts, etc.
-- **Events**: WordPress community events
 - **Themes**: WordPress theme data
-- **Stats**: Various WordPress.org statistics
+- **Events**: WordPress community events
+- **Patterns**: WordPress block patterns
+- **Stats**: WordPress version, PHP version, MySQL version, and locale statistics
 
 ## Project Structure
 
@@ -103,7 +104,7 @@ meltano-wordpress-org-data-starter-project/
 # See all available commands (macOS/Linux only)
 make help
 
-# Quick start (install plugins, extract sample data, check results)
+# Quick start (install plugins, create sample data, extract events, check results, launch notebook)
 make quickstart
 
 # Extract specific data streams
@@ -147,19 +148,27 @@ This project includes a comprehensive Makefile with convenient targets:
 | Command | Description | Windows |
 |---------|-------------|---------|
 | `make setup` | Set up dependencies using uv | Yes |
-| `make quickstart` | Complete setup: install plugins, extract sample data, check results | Partial |
+| `make install` | Install/reinstall Meltano plugins | Yes |
+| `make quickstart` | Complete setup: install plugins, create sample data, extract events, check data, and launch notebook | Partial |
+| `make extract` | Default extract (plugins only) | Yes |
 | `make extract-plugins` | Extract WordPress plugins data only | Yes |
 | `make extract-events` | Extract WordPress events data only | Yes |
 | `make extract-themes` | Extract WordPress themes data only | Yes |
 | `make extract-all` | Extract all available data streams | Yes |
+| `make extract-quick` | Quick extraction with limited data for testing | Yes |
 | `make sample-data` | Create sample data from WordPress.org API for testing | Yes |
 | `make check-data` | Check what data is in the database | Yes |
 | `make notebook` | Start Jupyter notebook with the analysis notebook open | Yes |
 | `make help` | Show all available commands | No |
 | `make status` | Show project status and installed plugins | No |
 | `make test` | Run basic tests to verify setup | No |
+| `make config` | Show current Meltano configuration | Yes |
+| `make clean` | Clean cache and temporary files | No |
 | `make clean-data` | Remove extracted data (keeps database structure) | No |
 | `make clean-db` | Remove database files completely | No |
+| `make clean-meltano-state` | Clear Meltano state (resets incremental sync bookmarks) | No |
+| `make clean-all` | Complete reset: remove all data, cache, and state | No |
+| `make requirements` | Generate requirements.txt from uv.lock (for compatibility) | Yes |
 
 > **Windows Users**: Commands marked "No" require a Unix shell (bash). On Windows, use the equivalent `uv run` commands directly, or use WSL/Git Bash.
 
@@ -198,20 +207,39 @@ uv run meltano config tap-wordpress-org set stream_selection '["plugins", "event
 uv run meltano config tap-wordpress-org set stream_selection ''
 ```
 
+### Events Location
+
+By default, the events stream is configured to fetch events near Mumbai (see `meltano.yml`). You can change this:
+
+```bash
+uv run meltano config tap-wordpress-org set events_location 'Seattle, WA'
+```
+
+Or edit the `events_location` value directly in `meltano.yml`.
+
 ### Available Streams
 
-The WordPress.org extractor provides several data streams:
-- `plugins` - WordPress plugin information
-- `events` - WordPress community events
-- `themes` - WordPress theme data
-- `stats` - WordPress.org statistics
+The WordPress.org extractor provides the following data streams:
+- `plugins` - WordPress plugin information (ratings, downloads, active installs, etc.)
+- `themes` - WordPress theme data (ratings, downloads, etc.)
+- `events` - WordPress community events (meetups, WordCamps)
+- `patterns` - WordPress block patterns
+- `wordpress_stats` - WordPress version usage statistics
+- `php_stats` - PHP version usage statistics
+- `mysql_stats` - MySQL version usage statistics
+- `locale_stats` - Locale/language usage statistics
 
 ## Database Schema
 
-The DuckDB database contains tables corresponding to each extracted stream:
-- `plugins` - Plugin details, ratings, downloads, etc.
+The DuckDB database contains tables corresponding to each extracted stream. Which tables are present depends on which streams you've extracted:
+- `plugins` - Plugin details, ratings, downloads, active installs, etc.
+- `themes` - Theme details, ratings, downloads, etc.
 - `events` - Event information, locations, dates
-- `stats` - Various WordPress.org metrics
+- `patterns` - Block pattern content and metadata
+- `wordpress_stats` - WordPress version distribution
+- `php_stats` - PHP version distribution
+- `mysql_stats` - MySQL version distribution
+- `locale_stats` - Locale/language distribution
 
 ## Example Queries
 
