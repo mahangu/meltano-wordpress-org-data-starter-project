@@ -76,6 +76,7 @@ extract-all: ## Extract all available data streams
 extract-quick: ## Quick extraction with limited data for testing
 	@echo "🔄 Running quick extraction (plugins only, limited)..."
 	$(UV_RUN) meltano config tap-wordpress-org set stream_selection '["plugins"]'
+	$(UV_RUN) meltano el tap-wordpress-org target-duckdb --state-id=wordpress-quick
 	@echo "✅ Quick extraction complete!"
 
 sample-data: ## Create sample data from WordPress.org API for testing
